@@ -30,31 +30,37 @@ sudo -H pip3 install --upgrade numpy
 echo "\e[100m Install jtop \e[0m"
 sudo -H pip install jetson-stats 
 
+# Install misc packages
+sudo apt install htop
+sudo apt install nano
+sudo apt install -y nvidia-jetpack
+sudo apt install ncdu
+
 
 # Install the pre-built TensorFlow pip wheel
-echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
-sudo apt-get update
-sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
-sudo apt-get install -y python3-pip
-sudo -H pip3 install -U pip setuptools
-sudo -H pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
-sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
+#echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
+#sudo apt-get update
+#sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
+#sudo apt-get install -y python3-pip
+#sudo -H pip3 install -U pip setuptools
+#sudo -H pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
+#sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
 
 # Install the pre-built PyTorch pip wheel 
-echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
-cd
-wget -N https://nvidia.box.com/shared/static/3ibazbiwtkl181n95n9em3wtrca7tdzp.whl -O torch-1.5.0-cp36-cp36m-linux_aarch64.whl
-sudo apt-get install -y python3-pip libopenblas-base libopenmpi-dev 
-sudo -H pip3 install Cython
-sudo -H pip3 install numpy torch-1.5.0-cp36-cp36m-linux_aarch64.whl
+#echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
+#cd
+#wget -N https://nvidia.box.com/shared/static/3ibazbiwtkl181n95n9em3wtrca7tdzp.whl -O torch-1.5.0-cp36-cp36m-linux_aarch64.whl
+#sudo apt-get install -y python3-pip libopenblas-base libopenmpi-dev 
+#sudo -H pip3 install Cython
+#sudo -H pip3 install numpy torch-1.5.0-cp36-cp36m-linux_aarch64.whl
 
 # Install torchvision package
-echo "\e[45m Install torchvision package \e[0m"
-cd
-git clone https://github.com/pytorch/vision
-cd vision
-#git checkout v0.4.0
-sudo -H python3 setup.py install
+#echo "\e[45m Install torchvision package \e[0m"
+#cd
+#git clone https://github.com/pytorch/vision
+#cd vision
+##git checkout v0.4.0
+#sudo -H python3 setup.py install
 
 # setup Jetson.GPIO
 #echo "\e[100m Install torchvision package \e[0m"
@@ -89,24 +95,24 @@ pwd
 sudo -H python3 setup.py install
 
 # Install jetcard display service
-echo "\e[44m Install jetcard display service \e[0m"
-python3 -m jetcard.create_display_service
-sudo mv jetcard_display.service /etc/systemd/system/jetcard_display.service
-sudo systemctl enable jetcard_display
-sudo systemctl start jetcard_display
+#echo "\e[44m Install jetcard display service \e[0m"
+#python3 -m jetcard.create_display_service
+#sudo mv jetcard_display.service /etc/systemd/system/jetcard_display.service
+#sudo systemctl enable jetcard_display
+#sudo systemctl start jetcard_display
 
 # Install jetcard jupyter service
-echo "\e[44m Install jetcard jupyter service \e[0m"
-python3 -m jetcard.create_jupyter_service
-sudo mv jetcard_jupyter.service /etc/systemd/system/jetcard_jupyter.service
-sudo systemctl enable jetcard_jupyter
-sudo systemctl start jetcard_jupyter
+#echo "\e[44m Install jetcard jupyter service \e[0m"
+#python3 -m jetcard.create_jupyter_service
+#sudo mv jetcard_jupyter.service /etc/systemd/system/jetcard_jupyter.service
+#sudo systemctl enable jetcard_jupyter
+#sudo systemctl start jetcard_jupyter
 
 # Make swapfile
 echo "\e[46m Make swapfile \e[0m"
 cd
 if [ ! -f /var/swapfile ]; then
-	sudo fallocate -l 4G /var/swapfile
+	sudo fallocate -l 6G /var/swapfile
 	sudo chmod 600 /var/swapfile
 	sudo mkswap /var/swapfile
 	sudo swapon /var/swapfile
@@ -116,22 +122,22 @@ else
 fi
 
 # Install TensorFlow models repository
-echo "\e[48;5;202m Install TensorFlow models repository \e[0m"
-cd
-url="https://github.com/tensorflow/models"
-tf_models_dir="TF-models"
-if [ ! -d "$tf_models_dir" ] ; then
-	git clone $url $tf_models_dir
-	cd "$tf_models_dir"/research
-	git checkout 5f4d34fc
-	wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
-	# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
-	unzip protobuf.zip
-	./bin/protoc object_detection/protos/*.proto --python_out=.
-	sudo -H python3 setup.py install
-	cd slim
-	sudo -H python3 setup.py install
-fi
+#echo "\e[48;5;202m Install TensorFlow models repository \e[0m"
+#cd
+#url="https://github.com/tensorflow/models"
+#tf_models_dir="TF-models"
+#if [ ! -d "$tf_models_dir" ] ; then
+#	git clone $url $tf_models_dir
+#	cd "$tf_models_dir"/research
+#	git checkout 5f4d34fc
+#	wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
+#	# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
+#	unzip protobuf.zip
+#	./bin/protoc object_detection/protos/*.proto --python_out=.
+#	sudo -H python3 setup.py install
+#	cd slim
+#	sudo -H python3 setup.py install
+#fi
 
 # Disable syslog to prevent large log files from collecting
 #sudo service rsyslog stop
